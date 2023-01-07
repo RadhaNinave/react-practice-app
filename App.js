@@ -1,25 +1,35 @@
-import { useState } from "react";
-import "./App.css";
-import AddUser from "./components/Users/AddUser";
-import UserList from "./components/Users/UserList";
+import React, { useState } from "react";
+import AuthContext from "./components/store/auth-context";
+import Login from "./components/Login/Login";
+import Home from "./components/Home/Home";
+import MainHeader from "./components/MainHeader/MainHeader";
 
 function App() {
-  const [userList, setUserList] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const addUserHandler = (uName,uAge,ucollege) => {
-    setUserList((prevUserList) => {
-      return [
-        ...prevUserList,
-        {name: uName, age: uAge, college: ucollege, id: Math.random().toString() },
-      ];
-    });
+  const loginHandler = (email, password, college) => {
+    // We should of course check email and password
+    // But it's just a dummy/ demo anyways
+    setIsLoggedIn(true);
   };
+
+  const logoutHandler = () => {
+    setIsLoggedIn(false);
+  };
+
   return (
-    <div>
-      <AddUser onAddUser={addUserHandler} />
-      <UserList users={userList} />
-    </div>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: isLoggedIn,
+      }}
+    >
+      <MainHeader onLogout={logoutHandler} />
+      <main>
+        {!isLoggedIn && <Login onLogin={loginHandler} />}
+        {isLoggedIn && <Home onLogout={logoutHandler} />}
+      </main>
+    </AuthContext.Provider>
   );
-};
+}
 
 export default App;
